@@ -1,87 +1,58 @@
 # UK Road Safety Data Analysis for Predicting Accident Severity
 
-## Introduction
+## Overview
 
-### Business Objective
+This repository contains an end-to-end exploratory and predictive analysis of UK road safety data. The objective is to forecast accident severity using vehicle characteristics and environmental factors so a car manufacturer can spot potential design weaknesses and improve safety features.
 
-The goal of this project is to develop a predictive model that forecasts the severity of road accidents based on various vehicle characteristics and environmental factors. This model is intended to help a car manufacturer identify potential weaknesses in vehicle design, which could lead to more severe accidents. By understanding these factors, the manufacturer can improve vehicle safety features and reduce the likelihood of severe accidents.
+Data is sourced from the [UK Department for Transport road safety dataset](https://data.gov.uk/dataset/cb7ae6f0-4be6-4935-9277-47e5ce24a11f/road-safety-data), which records accidents, involved vehicles, and the conditions in which the incidents occurred. Key predictors include vehicle type, engine capacity, maneuver, first point of impact, and road surface conditions.
 
-### Context
+## Project Structure
 
-The analysis uses data sourced from the UK Department for Transport's road safety dataset(available in [UK Department for Transport](https://data.gov.uk/dataset/cb7ae6f0-4be6-4935-9277-47e5ce24a11f/road-safety-data). This dataset includes detailed records of road accidents, the vehicles involved, and the conditions under which these accidents occurred. The focus is on predicting the severity of an accident (our target variable) using variables such as vehicle type, engine capacity, vehicle maneuver, the first point of impact, and road surface conditions.
+- `Data preprocessing.ipynb`: Cleans, merges, and prepares the accidents, vehicles, and casualties data for analysis.
+- `Model.ipynb`: Develops and evaluates predictive models for accident severity.
 
-## Descriptive Statistics
+## Methodology
 
-## Exploratory Data Analysis
+### Exploratory Data Analysis
 
-### Univariate Analysis
+- **Accident severity distribution**: Most incidents are minor, with fewer serious and fatal cases.
+- **Vehicle type frequency**: Cars dominate the dataset, followed by motorcycles and heavy vehicles.
+- **Road surface conditions**: Accidents occur mainly on dry surfaces, with fewer incidents on wet or icy roads.
+- **Correlation and pair plots**: Vehicle type, road conditions, and maneuver show moderate relationships with accident severity; pair plots highlight potential non-linear effects for variables such as engine capacity.
 
-- **Accident Severity Distribution**: The distribution of accident severity was analyzed, showing that the majority of accidents were minor, with fewer serious and fatal accidents.
-- **Vehicle Type Frequency**: Most accidents involved cars, followed by motorcycles and heavy vehicles.
-- **Road Surface Conditions**: The majority of accidents occurred on dry surfaces, with a smaller percentage occurring on wet or icy roads.
+### Data Preparation
 
-### Multivariate Analysis
+- **Merging datasets**: Combined accident, vehicle, and casualty tables on shared identifiers to create a unified modeling table.
+- **Handling missing values**: Mean imputation for numeric fields and mode imputation for categorical fields.
+- **Outlier treatment**: Identified and removed extreme values (notably in engine capacity and severity) to reduce skew.
+- **Feature scaling**: Standardized continuous variables (e.g., engine capacity, speed) to balance model influence.
+- **Feature engineering**: Added interaction terms, such as vehicle maneuver × road surface condition, to capture compound effects.
 
-- **Correlation Matrix**: The correlation matrix revealed that vehicle type, road conditions, and maneuver had a moderate correlation with accident severity.
-- **Pair Plots**: Pair plots were generated to visualize the relationships between variables such as vehicle type, engine capacity, and accident severity, highlighting potential non-linear relationships.
+### Modeling
 
-## Data Preprocessing
+- **Baseline**: Logistic regression predicting severity categories (minor, serious, fatal) achieved ~70% accuracy.
+- **Feature selection**: Recursive Feature Elimination prioritized vehicle type, road surface condition, and first point of impact for improved performance.
+- **Model tuning**: Random Forest and Gradient Boosting models were grid-searched over tree count and depth parameters.
+- **Best performance**: The tuned model reached ~78% accuracy with precision and recall of 0.76 and 0.74, respectively.
 
-### Joining Different Datasets
+### Evaluation
 
-- **Merging Datasets**: The accidents, vehicles, and casualties datasets were merged based on common identifiers to create a unified dataset. This dataset was used for all subsequent analysis.
+Final models were compared using accuracy, precision/recall/F1, and confusion matrices to understand class-level behavior.
 
-### Data Cleaning
+## How to Reproduce
 
-- **Handling Missing Values**: Missing values were handled through mean imputation for numerical variables and mode imputation for categorical variables.
-- **Outlier Detection and Removal**: Outliers, particularly in engine capacity and accident severity, were detected and removed to prevent them from skewing the results.
+1. **Set up Python**: Create a virtual environment and install dependencies used in the notebooks: `pandas`, `numpy`, `scikit-learn`, `imbalanced-learn`, `matplotlib`, and `seaborn`.
+2. **Download data**: Retrieve the raw accident, vehicle, and casualty files from the [UK Department for Transport source](https://data.gov.uk/dataset/cb7ae6f0-4be6-4935-9277-47e5ce24a11f/road-safety-data) and place them in a local data directory (not tracked in this repository).
+3. **Run notebooks**:
+   - Execute `Data preprocessing.ipynb` to clean and merge the datasets, producing the modeling-ready table.
+   - Execute `Model.ipynb` to train, tune, and evaluate the predictive models.
 
-### Scaling
+## Conclusion and Next Steps
 
-- **Feature Scaling**: Continuous variables such as engine capacity and speed were scaled using standardization to ensure that they had equal weight in the modeling process.
+The project demonstrates that vehicle and environment attributes can meaningfully predict accident severity on the UK road network. Insights from the tuned model can guide safety-focused design changes and operational planning.
 
-### Feature Engineering
+Potential enhancements include:
 
-- **Creation of New Features**: New features, such as interaction terms between vehicle maneuver and road surface conditions, were created to capture complex relationships that may impact accident severity.
-
-## Baseline Method
-
-A baseline logistic regression model was implemented to establish a performance benchmark.
-
-- **Model Implementation**: The logistic regression model was trained on the preprocessed dataset to predict accident severity (minor, serious, fatal).
-- **Baseline Performance**: The baseline model achieved an accuracy of 70%, serving as a reference point for evaluating more complex models.
-
-## Feature Selection
-
-Feature selection was performed to identify the most predictive variables for accident severity.
-
-- **Methodology**: Recursive Feature Elimination (RFE) was used to rank features and select the top predictors, including vehicle type, road surface conditions, and first point of impact.
-- **Selected Features**: The final model included these top-ranked features to improve predictive performance.
-
-## Hyperparameter Tuning
-
-Hyperparameter tuning was conducted to optimize the performance of the advanced models.
-
-- **Models Tested**: Random Forest and Gradient Boosting were the primary models tested, with hyperparameters tuned for each.
-- **Tuning Process**: Grid Search was used to explore combinations of hyperparameters, such as the number of trees in the forest and the depth of each tree.
-- **Best Model Performance**: The best model achieved an accuracy of 78%, with precision and recall scores of 0.76 and 0.74, respectively.
-
-## Model Evaluation
-
-The final model was evaluated on several metrics to ensure robust performance.
-
-- **Accuracy**
-- **Precision, Recall, and F1-Score**
-- **Confusion Matrix**
-
-## Conclusion and Possible Future Improvements
-
-### Conclusion
-
-This project successfully developed a predictive model for accident severity using the UK road safety dataset. The final model demonstrated strong predictive power and provided valuable insights into the factors contributing to severe accidents. These insights can be used by the car manufacturer to make data-driven improvements to vehicle safety design.
-
-### Future Improvements
-
-- **Incorporating Additional Features**: Future work could involve incorporating more granular data, such as driver behavior or real-time weather conditions, to further enhance model accuracy.
-- **Exploring Deep Learning Models**: The use of deep learning techniques, such as neural networks, could be explored to capture more complex patterns in the data.
-- **Real-Time Implementation**: Implementing the model in a real-time prediction system for accident severity could provide immediate insights for emergency response teams.
+- Incorporating richer behavioral or weather data for finer-grained predictions.
+- Exploring deep learning architectures to capture higher-order relationships.
+- Deploying the model in a real-time pipeline to inform emergency response and in-vehicle safety systems.
